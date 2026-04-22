@@ -11,14 +11,17 @@ factors = [4, 2, 2, 4, 4, 4, 4, 2, 2]
 
 excluded_gpus = set([])
 
-output_dir = "exp_360/release"
+output_dir = "results/mipnerf360"
 
 dry_run = False
 
 jobs = list(zip(scenes, factors))
 
 def train_scene(gpu, scene, factor):
-    cmd = f"OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES={gpu} python train.py -s 360_v2/{scene} -m {output_dir}/{scene} --eval -i images_{factor} --port {6109+int(gpu)}"
+    
+    data_dir = "~/data/mipnerf360" if scene not in ["flowers", "treehill"] else "~/data/mipnerf360_extra"
+    
+    cmd = f"OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES={gpu} python train.py -s {data_dir}/{scene} -m {output_dir}/{scene} --eval -i images_{factor} --port {6109+int(gpu)}"
     print(cmd)
     if not dry_run:
        os.system(cmd)
